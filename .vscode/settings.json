@@ -1,5 +1,8 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
+    ],
+    "java.project.sourcePaths": [
+        "P4_LlucKoome_PauCastella\\src"
     ]
 }
