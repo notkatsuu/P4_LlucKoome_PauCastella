@@ -11,25 +11,31 @@ import jconsole.JConsole;
 public class Main {
 
     public enum Menus {
-        opcions, entrarPosicio, entrarPuntuacio, mostrarArbre
+        opcions, entrarPosicio, entrarPuntuacio,
     }
 
     public static JConsole console;
 
     public static <E extends Comparable<E>> void main(String[] args) throws Exception {
-        Acb<E> arbre = new AcbEnll(); // no entenc lo de la E
+        Acb<E> arbre = new AcbEnll();
+        Acb<E> duplicate = null; // no entenc lo de la E
+        Acb<E> aVisualitzar = null;
+
         Comparable<E> c;
+
         initConsole();
         boolean run = true;
         while (run) {
             console.clear();
             switch (sistemaPrints(Menus.opcions)) {
+
                 case 1:
+
                     try {
-                         E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
+                        E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
                         arbre.inserir(j);
                     } catch (ArbreException e) {
-                        
+
                         console.setForegroundColor(Color.red);
                         console.println("\n" + e.toString() + "\n");
                         console.resetColor();
@@ -38,7 +44,9 @@ public class Main {
                     }
 
                     break;
+
                 case 2:
+
                     try {
                         E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
                         arbre.esborrar(j);
@@ -52,16 +60,26 @@ public class Main {
                     break;
 
                 case 3:
+                    if (seleccioBinaria("Actual", "Clonat"))
+                        aVisualitzar = arbre;
+                    else if (duplicate != null) {
+                        aVisualitzar = duplicate;
+                        System.out.print(duplicate);
+                    } else {
+                        console.println("Arbre Buit");
+                        break;
+                    }
 
                     try {
-                         ((AcbEnll) arbre).iniRecorregut(true);
+                        ((AcbEnll) aVisualitzar).iniRecorregut(seleccioBinaria("Ascendent", "Descendent"));
+
                         do {
-                            
-                            c = ((AcbEnll) arbre).segRecorregut();
-                            
+
+                            c = ((AcbEnll) aVisualitzar).segRecorregut();
+
                             console.println(c.toString());
 
-                        } while (!((AcbEnll) arbre).finalRecorregut());
+                        } while (!((AcbEnll) aVisualitzar).finalRecorregut());
 
                     } catch (ArbreException e) {
 
@@ -73,7 +91,12 @@ public class Main {
                     }
 
                     console.readKey();
-                    
+
+                    break;
+
+                case 4:
+
+                    duplicate = (Acb<E>) ((AcbEnll) arbre).clone();
                     break;
 
                 case 5:
@@ -142,6 +165,20 @@ public class Main {
 
         }
 
+    }
+
+    public static boolean seleccioBinaria(String a, String b) {
+        int result;
+        do {
+            console.println("Indica en quin ordre vols mostrar els jugadors");
+            console.println("1.- " + a);
+            console.println("2.- " + b);
+            console.println("Tria una opció [1,2]");
+
+            result = console.readInt();
+        } while (result != 2 && result != 1);
+
+        return (result == 1);
     }
 
 }

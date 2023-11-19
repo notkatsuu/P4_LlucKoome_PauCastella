@@ -27,6 +27,28 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
         }
 
+        public Object clone() {
+            NodeA aux = null;
+
+            try {
+
+                aux = (NodeA) (super.clone());
+
+                if (left != null)
+                    aux.left = (NodeA) (left.clone());
+                if (right != null)
+                    aux.right = (NodeA) (right.clone());
+
+            } catch (CloneNotSupportedException e) {
+                return null;
+            }
+
+            return aux;
+
+        }
+
+        // METODES ADICIONALS RECURSIUS
+
         private void recorrerDireccio(NodeA node, boolean sentit) {
             if (node == null) {
                 return;
@@ -41,6 +63,102 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
                 cua.add(node.cont);
                 recorrerDireccio(node.left, sentit);
             }
+        }
+
+        private NodeA inserirR(NodeA a, E e) throws ArbreException {
+
+            if (a == null) {
+                a = new NodeA(null, e, null);
+                return a;
+            } else {
+
+                int dif = e.compareTo(a.cont);
+
+                if (dif == 0)
+                    throw new ArbreException("Ja existeix aquest element");
+
+                if (dif > 0)
+                    a.right = inserirR(a.right, e);
+                else
+                    a.left = inserirR(a.left, e);
+            }
+
+            return a;
+        }
+
+        private NodeA esborrarR(NodeA a, E e) throws ArbreException {
+
+            if (a == null) {
+                return null;
+            }
+
+            int dif = e.compareTo((E) (a.cont));
+
+            if (dif < 0) {
+                a.left = esborrarR(a.left, e);
+
+            } else if (dif > 0) {
+                a.right = esborrarR(a.right, e);
+
+            } else { // l'hem trobat
+
+                if (a.left == null) {
+
+                    return a.right;
+
+                } else if (a.right == null) {
+
+                    return a.left;
+
+                } else {
+                    a.cont = buscarMax(a.left);
+                    a.left = esborrarMax(a.left);
+                }
+            }
+
+            return a;
+        }
+
+        private boolean membreR(NodeA a, E e) {
+
+            if (a == null) {
+
+                return false;
+
+            }
+
+            int dif = e.compareTo(a.cont);
+
+            System.out.print(dif);
+
+            if (dif == 0) {
+
+                System.out.print("Trobat");
+                return true;
+            }
+
+            if (dif > 0)
+                return membreR(a.right, e);
+
+            return membreR(a.left, e);
+        }
+
+        private E buscarMax(NodeA a) { // Katsu toca això que has tingut una idea millor
+            while (a.right != null)
+                a = a.right;
+            return (E) (a.cont);
+
+        }
+
+        private NodeA esborrarMax(NodeA a) { // Katsu toca això que has tingut una idea millor
+
+            if (a.right == null)
+                return a.left;
+
+            a.right = esborrarMax(a.right);
+
+            return a;
+
         }
 
     }
@@ -115,7 +233,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
         else
 
-            arrel = inserirR(this.arrel, e);
+            arrel = arrel.inserirR(this.arrel, e);
     }
 
     @Override
@@ -129,113 +247,17 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         if (!membre(e))
             throw new ArbreException("L'element no es troba a l'arbre");
 
-        this.arrel = esborrarR(this.arrel, e);
+        this.arrel = arrel.esborrarR(this.arrel, e);
     }
 
     @Override
     public boolean membre(E e) {
 
-        return membreR(this.arrel, e);
+        return arrel.membreR(this.arrel, e);
 
     }
 
     // ELS METODES PRIVATS ELS HAURE DE POSAR A DINS LA CLASSE NODE AL FINAL
-
-    private NodeA inserirR(NodeA a, E e) throws ArbreException {
-
-        if (a == null) {
-            a = new NodeA(null, e, null);
-            return a;
-        } else {
-
-            int dif = e.compareTo(a.cont);
-
-            if (dif == 0)
-                throw new ArbreException("Ja existeix aquest element");
-
-            if (dif > 0)
-                a.right = inserirR(a.right, e);
-            else
-                a.left = inserirR(a.left, e);
-        }
-
-        return a;
-    }
-
-    private NodeA esborrarR(NodeA a, E e) throws ArbreException {
-
-        if (a == null) {
-            return null;
-        }
-
-        int dif = e.compareTo((E) (a.cont));
-
-        if (dif < 0) {
-            a.left = esborrarR(a.left, e);
-
-        } else if (dif > 0) {
-            a.right = esborrarR(a.right, e);
-
-        } else { // l'hem trobat
-            
-            if (a.left == null) {
-                
-                return a.right;
-
-            } else if (a.right == null) {
-
-                return a.left;
-
-            } else {
-                a.cont = buscarMax(a.left);
-                a.left = esborrarMax(a.left);
-            }
-        }
-
-        return a;
-    }
-
-    private E buscarMax(NodeA a) { // Katsu toca això que has tingut una idea millor
-        while (a.right != null)
-            a = a.right;
-        return (E) (a.cont);
-
-    }
-
-    private NodeA esborrarMax(NodeA a) { // Katsu toca això que has tingut una idea millor
-
-        if (a.right == null)
-            return a.left;
-
-        a.right = esborrarMax(a.right);
-
-        return a;
-
-    }
-
-    private boolean membreR(NodeA a, E e) {
-
-        if (a == null) {
-
-            return false;
-
-        }
-
-        int dif = e.compareTo(a.cont);
-
-        System.out.print(dif);
-
-        if (dif == 0) {
-
-            System.out.print("Trobat");
-            return true;
-        }
-
-        if (dif > 0)
-            return membreR(a.right, e);
-
-        return membreR(a.left, e);
-    }
 
     public void iniRecorregut(boolean sentit) { // He afegit de paràmetre el node
 
@@ -275,11 +297,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
     public E segRecorregut() throws ArbreException {
         if (cua == null || cua.isEmpty())
             throw new ArbreException("Cua Buida");
-            
-            // Mirar si es modifica l'arbre, copiant la cua a un aux i fent una nova cua per
-               // tal de veure si coincideixen
-            
-            
+
+        // Mirar si es modifica l'arbre, copiant la cua a un aux i fent una nova cua per
+        // tal de veure si coincideixen
 
         return cua.poll();
 
@@ -296,5 +316,22 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      * modificació de l’arbre, això és, s’ha fet ús del mètode inserir, esborrar,
      * buidar
      */
+
+    @Override
+    public Object clone() {
+
+        if (arrel != null) {
+            
+
+            System.out.println("cagumdeu");
+
+
+            return (AcbEnll<E>.NodeA) arrel.clone();
+        }
+
+        else return null;
+
+        
+    }
 
 }
