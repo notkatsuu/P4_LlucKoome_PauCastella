@@ -1,27 +1,30 @@
 package Jugador;
 
-public class Jugador {
+public class Jugador implements Comparable<Jugador> {
 
     public enum Posicio{ Base, Escorta, Aler, AlerPivot, Pivot};
 
     private Posicio pos;
-
+    
     private int puntuacio;
 
     public Jugador(int pos, int punts){
 
-        this.pos = Posicio.values()[pos]; // Converteixo l'enter a una Posició i l'assigno a l'Atribut pos
+        this.pos = Posicio.values()[pos-1]; // Converteixo l'enter a una Posició i l'assigno a l'Atribut pos
 
         puntuacio = punts; // assigno els punts
 
     }
 
-    public boolean compareTo(Jugador j){ //Comparació entre jugadors
+    public int compareTo(Jugador j){ //Comparació entre jugadors
 
-        if (j.pos==this.pos){ //Si les posicions coincideixen
-            return (j.puntuacio == this.puntuacio); //Retorna si tenen la mateixa posició
-        }
-        return false; //Si no, !=
+        int val=this.pos.compareTo(j.pos);
+
+        if(val == 0)
+            return (this.puntuacio-j.puntuacio);
+
+        else return val;
+        
     }
 
     public String toString(){

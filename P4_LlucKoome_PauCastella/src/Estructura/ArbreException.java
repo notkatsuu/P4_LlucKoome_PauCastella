@@ -1,9 +1,9 @@
 package Estructura;
 
 public class ArbreException extends Exception{
-    long serialVersionUID;
+    private static final long serialVersionUID = 1L;
 
     ArbreException(String s){
-        this.serialVersionUID = Long.parseLong(s);
+        super(s);
     }
 }

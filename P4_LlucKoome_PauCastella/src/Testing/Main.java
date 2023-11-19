@@ -1,30 +1,85 @@
 package Testing;
 
+import java.awt.Color;
 
 import Estructura.Acb;
 import Estructura.AcbEnll;
+import Estructura.ArbreException;
 import Jugador.Jugador;
 import jconsole.JConsole;
 
-
-public class Main{
+public class Main {
 
     public enum Menus {
         opcions, entrarPosicio, entrarPuntuacio, mostrarArbre
     }
-         
-    public static JConsole console;
-    
-    public static void main(String[] args) throws Exception {
-        Acb<E> arbre = new AcbEnll();                  // no entenc lo de la E
-        Comparable c;
-        initConsole();
 
-        switch (sistemaPrints(Menus.opcions)) {
-            case 1:
-                arbre.inserir(Jugador(1,1));
-            case 2:
-                sistemaPrints(Menus.opcions);
+    public static JConsole console;
+
+    public static <E extends Comparable<E>> void main(String[] args) throws Exception {
+        Acb<E> arbre = new AcbEnll(); // no entenc lo de la E
+        Comparable<E> c;
+        initConsole();
+        boolean run = true;
+        while (run) {
+            console.clear();
+            switch (sistemaPrints(Menus.opcions)) {
+                case 1:
+                    try {
+                         E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
+                        arbre.inserir(j);
+                    } catch (ArbreException e) {
+                        
+                        console.setForegroundColor(Color.red);
+                        console.println("\n" + e.toString() + "\n");
+                        console.resetColor();
+                        console.readKey();
+                        console.clear();
+                    }
+
+                    break;
+                case 2:
+                    try {
+                        E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
+                        arbre.esborrar(j);
+                    } catch (ArbreException e) {
+                        console.setForegroundColor(Color.red);
+                        console.println("\n" + e.toString() + "\n");
+                        console.resetColor();
+                        console.readKey();
+                        console.clear();
+                    }
+                    break;
+
+                case 3:
+
+                    try {
+                         ((AcbEnll) arbre).iniRecorregut(true);
+                        do {
+                            
+                            c = ((AcbEnll) arbre).segRecorregut();
+                            
+                            console.println(c.toString());
+
+                        } while (!((AcbEnll) arbre).finalRecorregut());
+
+                    } catch (ArbreException e) {
+
+                        console.setForegroundColor(Color.red);
+                        console.println("\n" + e.toString() + "\n");
+                        console.resetColor();
+                        console.readKey();
+                        console.clear();
+                    }
+
+                    console.readKey();
+                    
+                    break;
+
+                case 5:
+                    run = !run;
+                    break;
+            }
         }
 
     }
@@ -54,10 +109,9 @@ public class Main{
 
                     console.println("Tria una opció: [1,5]");
                     val = console.readInt();
-                    
+
                 } while (val < 1 && val > 5);
                 return val;
-                
 
             case entrarPosicio:
                 do {
