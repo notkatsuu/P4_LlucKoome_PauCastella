@@ -1,7 +1,5 @@
 package Estructura;
 
-import jconsole.JConsole;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -11,9 +9,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         E cont;
         NodeA left, right;
 
-        NodeA() {
-            this(null);
-        }
+
 
         NodeA(E o) {
             this(null, o, null);
@@ -27,27 +23,8 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
         }
 
-        public Object clone() {
-            NodeA aux = null;
 
-            try {
-
-                aux = (NodeA) (super.clone());
-
-                if (left != null)
-                    aux.left = (NodeA) (left.clone());
-                if (right != null)
-                    aux.right = (NodeA) (right.clone());
-
-            } catch (CloneNotSupportedException e) {
-                return null;
-            }
-
-            return aux;
-
-        }
-
-        // METODES ADICIONALS RECURSIUS
+        // METODES ADDICIONALS RECURSIUS
 
         private void recorrerDireccio(NodeA node, boolean sentit) {
             if (node == null) {
@@ -68,7 +45,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         private NodeA inserirR(NodeA a, E e) throws ArbreException {
 
             if (a == null) {
-                a = new NodeA(null, e, null);
+                a = new NodeA(e);
                 return a;
             } else {
 
@@ -170,7 +147,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         this.arrel = null;
     }
 
-    public AcbEnll(AcbEnll left, E e, AcbEnll right) {
+    public AcbEnll(AcbEnll<E> left, E e, AcbEnll<E> right) {
 
         this.arrel = new NodeA(left.arrel, e, right.arrel);
     }
@@ -225,7 +202,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
             throw new ArbreException("Element Buit");
 
         if (arrel == null)
-            arrel = new NodeA(null, e, null);
+            arrel = new NodeA(e);
 
         else if (membre(e)) {
             throw new ArbreException("Ja hi es");
@@ -317,21 +294,6 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      * buidar
      */
 
-    @Override
-    public Object clone() {
-
-        if (arrel != null) {
-            
-
-            System.out.println("cagumdeu");
-
-
-            return (AcbEnll<E>.NodeA) arrel.clone();
-        }
-
-        else return null;
-
-        
-    }
+    
 
 }

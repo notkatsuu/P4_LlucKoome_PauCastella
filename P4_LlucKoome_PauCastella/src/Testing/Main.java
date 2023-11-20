@@ -96,7 +96,7 @@ public class Main {
 
                 case 4:
 
-                    duplicate = (Acb<E>) ((AcbEnll) arbre).clone();
+                   
                     break;
 
                 case 5:
