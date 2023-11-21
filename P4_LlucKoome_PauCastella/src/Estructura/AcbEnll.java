@@ -9,7 +9,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         E cont;
         NodeA left, right;
 
-
+        NodeA() {
+            this(null);
+        }
 
         NodeA(E o) {
             this(null, o, null);
@@ -23,24 +25,39 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
         }
 
-
         // METODES ADDICIONALS RECURSIUS
 
-        private void recorrerDireccio(NodeA node, boolean sentit) {
-            if (node == null) {
-                return;
+        @Override
+        public NodeA clone() {
+            NodeA cloned = new NodeA();
+            cloned.cont = this.cont;
+            if (this.left != null) {
+                cloned.left = this.left.clone();
             }
-
-            if (sentit) {
-                recorrerDireccio(node.left, sentit);
-                cua.add(node.cont);
-                recorrerDireccio(node.right, sentit);
-            } else {
-                recorrerDireccio(node.right, sentit);
-                cua.add(node.cont);
-                recorrerDireccio(node.left, sentit);
+            if (this.right != null) {
+                cloned.right = this.right.clone();
             }
+            return cloned;
         }
+
+        private Queue<E> recorrerDireccio(boolean sentit) {
+            Queue<E> auxQueue = new LinkedList<>();
+            NodeA firstNode = sentit ? this.left : this.right;
+            NodeA secondNode = sentit ? this.right : this.left;
+        
+            if (firstNode != null) {
+                auxQueue.addAll(firstNode.recorrerDireccio(sentit));
+            }
+            
+            auxQueue.add(this.cont);
+        
+            if (secondNode != null) {
+                auxQueue.addAll(secondNode.recorrerDireccio(sentit));
+            }
+        
+            return auxQueue;
+        }
+        
 
         private NodeA inserirR(NodeA a, E e) throws ArbreException {
 
@@ -106,11 +123,11 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
             int dif = e.compareTo(a.cont);
 
-            System.out.print(dif);
+         
 
             if (dif == 0) {
 
-                System.out.print("Trobat");
+            
                 return true;
             }
 
@@ -140,8 +157,8 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     }
 
-    protected NodeA arrel;
-    Queue<E> cua = new LinkedList<>();
+    protected NodeA arrel = null;
+    public Queue<E> cua = new LinkedList<>();
 
     public AcbEnll() { // sense parametre, constructor arbre null
         this.arrel = null;
@@ -236,13 +253,12 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     // ELS METODES PRIVATS ELS HAURE DE POSAR A DINS LA CLASSE NODE AL FINAL
 
-    public void iniRecorregut(boolean sentit) { // He afegit de paràmetre el node
-
+    public void iniRecorregut(boolean sentit) {
+       
         if (arrel == null)
             return;
-
-        arrel.recorrerDireccio(arrel, sentit);
-
+        cua = this.arrel.recorrerDireccio(sentit); // Assign the returned queue to cua
+       
     }
 
     /*
@@ -272,7 +288,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      * mètode segRecorregut
      */
     public E segRecorregut() throws ArbreException {
-        if (cua == null || cua.isEmpty())
+        if (cua == null)
+            throw new ArbreException("Cua Inexistent");
+        if (cua.isEmpty())
             throw new ArbreException("Cua Buida");
 
         // Mirar si es modifica l'arbre, copiant la cua a un aux i fent una nova cua per
@@ -294,6 +312,12 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      * buidar
      */
 
-    
+    @Override
+    public Object clone() {
+        AcbEnll<E> copia = new AcbEnll<E>();
+        copia.arrel = this.arrel.clone();
+
+        return copia;
+    }
 
 }

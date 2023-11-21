@@ -10,161 +10,147 @@ import jconsole.JConsole;
 
 public class Main {
 
+    // Enum for different menu options
     public enum Menus {
-        opcions, entrarPosicio, entrarPuntuacio,
+        OPCIONS("1.- Inserir Jugador", "2.- Eliminar Jugador", "3.- Visualitzar un dels dos arbres", "4.- Clonar",
+                "5.- Acabar"),
+        ENTRAR_POSICIO("1.- Base", "2.- Escorta", "3.- Aler", "4.- AlerPivot", "5.- Pivot"),
+        ENTRAR_PUNTUACIO("Indica la seva puntuació [0, 1000]");
+
+        private final String[] options;
+
+        Menus(String... options) {
+            this.options = options;
+        }
+
+        // Returns the options associated with this menu
+        String[] getOptions() {
+            return options;
+        }
     }
 
     public static JConsole console;
 
     public static <E extends Comparable<E>> void main(String[] args) throws Exception {
-        Acb<E> arbre = new AcbEnll();
-        Acb<E> duplicate = null; // no entenc lo de la E
+        // Initialize the trees
+        Acb<E> arbre = new AcbEnll<E>();
+        Acb<E> duplicate = new AcbEnll<E>();
         Acb<E> aVisualitzar = null;
 
         Comparable<E> c;
 
+        // Initialize the console
         initConsole();
+
         boolean run = true;
         while (run) {
             console.clear();
-            switch (sistemaPrints(Menus.opcions)) {
+            // Display the options and perform the selected action
+            switch (sistemaPrints(Menus.OPCIONS)) {
 
                 case 1:
+    try {
+        Jugador j = seleccioJugador();
+        arbre.inserir((E) j);
+    } catch (ArbreException e) {
+        printArbreException(e);
+    }
+    break;
 
-                    try {
-                        E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
-                        arbre.inserir(j);
-                    } catch (ArbreException e) {
+case 2:
+    try {
+        Jugador j = seleccioJugador();
+        arbre.esborrar((E) j);
+    } catch (ArbreException e) {
+        printArbreException(e);
+    }
+    break;
 
-                        console.setForegroundColor(Color.red);
-                        console.println("\n" + e.toString() + "\n");
-                        console.resetColor();
-                        console.readKey();
-                        console.clear();
-                    }
-
-                    break;
-
-                case 2:
-
-                    try {
-                        E j = (E) new Jugador(sistemaPrints(Menus.entrarPosicio), sistemaPrints(Menus.entrarPuntuacio));
-                        arbre.esborrar(j);
-                    } catch (ArbreException e) {
-                        console.setForegroundColor(Color.red);
-                        console.println("\n" + e.toString() + "\n");
-                        console.resetColor();
-                        console.readKey();
-                        console.clear();
-                    }
-                    break;
 
                 case 3:
+                    // Display one of the trees
                     if (seleccioBinaria("Actual", "Clonat"))
                         aVisualitzar = arbre;
                     else if (duplicate != null) {
                         aVisualitzar = duplicate;
-                        System.out.print(duplicate);
                     } else {
                         console.println("Arbre Buit");
                         break;
                     }
 
                     try {
-                        ((AcbEnll) aVisualitzar).iniRecorregut(seleccioBinaria("Ascendent", "Descendent"));
+                        ((AcbEnll<E>) aVisualitzar).iniRecorregut(seleccioBinaria("Ascendent", "Descendent"));
 
                         do {
-
-                            c = ((AcbEnll) aVisualitzar).segRecorregut();
-
+                            // Display the next element in the tree
+                            c = ((AcbEnll<E>) aVisualitzar).segRecorregut();
                             console.println(c.toString());
 
-                        } while (!((AcbEnll) aVisualitzar).finalRecorregut());
+                        } while (!((AcbEnll<E>) aVisualitzar).finalRecorregut());
 
                     } catch (ArbreException e) {
-
-                        console.setForegroundColor(Color.red);
-                        console.println("\n" + e.toString() + "\n");
-                        console.resetColor();
-                        console.readKey();
-                        console.clear();
+                        // Handle exception
+                        printArbreException(e);
                     }
 
                     console.readKey();
-
                     break;
 
                 case 4:
-
-                   
+                    // Clone the tree
+                    duplicate = (Acb<E>) ((AcbEnll) arbre).clone();
                     break;
 
                 case 5:
+                    // Exit the program
                     run = !run;
                     break;
             }
         }
 
+        System.exit(0);
+
     }
 
-    private static Object Jugador(int i, int j) {
-        return null;
-    }
-
+    // Initialize the console
     public static void initConsole() {
         console = new JConsole(80, 30);
         console.setCursorVisible(false);
         console.setTitle("P4_PauCastella_LlucKoome");
     }
 
+    // Display the options for the given menu and return the selected option
     public static int sistemaPrints(Menus actual) {
         int val = -1;
         switch (actual) {
 
-            case opcions:
-
+            case OPCIONS:
+            case ENTRAR_POSICIO:
                 do {
-                    console.println("1.- Inserir Jugador");
-                    console.println("2.- Eliminar Jugador");
-                    console.println("3.- Visualitzar un dels dos arbres");
-                    console.println("4.- Clonar");
-                    console.println("5.- Acabar");
+                    // Display the options
+                    for (String option : actual.getOptions()) {
+                        console.println(option);
+                    }
 
-                    console.println("Tria una opció: [1,5]");
+                    console.println("Tria una opció: [1," + actual.getOptions().length + "]");
                     val = console.readInt();
 
-                } while (val < 1 && val > 5);
+                } while (val < 1 || val > actual.getOptions().length);
                 return val;
 
-            case entrarPosicio:
+            case ENTRAR_PUNTUACIO:
                 do {
+                    // Prompt
 
-                    console.println("Indica la posició del jugador:");
-                    console.println("1.- Base");
-                    console.println("2.- Escorta");
-                    console.println("3.- Aler");
-                    console.println("4.- AlerPivot");
-                    console.println("5.- Pivot");
-
-                    console.println("Tria una opció: [1,5]");
+                    console.println(actual.getOptions()[0]);
                     val = console.readInt();
 
-                } while (val < 1 && val > 5);
-                return val;
-
-            case entrarPuntuacio:
-                do {
-                    console.println("Indica la seva punctuació [0, 1000]");
-                    val = console.readInt();
-
-                } while (val < 0 && val > 1000);
+                } while (val < 0 || val > 1000);
                 return val;
 
             default:
                 return -1;
-
         }
-
     }
 
     public static boolean seleccioBinaria(String a, String b) {
@@ -180,5 +166,18 @@ public class Main {
 
         return (result == 1);
     }
+
+    public static void printArbreException(ArbreException e) {
+        console.setForegroundColor(Color.red);
+        console.println("\n" + e.toString() + "\n");
+        console.resetColor();
+        console.readKey();
+        console.clear();
+    }
+
+    private static Jugador seleccioJugador() {
+        return new Jugador(sistemaPrints(Menus.ENTRAR_POSICIO), sistemaPrints(Menus.ENTRAR_PUNTUACIO));
+    }
+    
 
 }
