@@ -314,6 +314,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     @Override
     public Object clone() {
+        if (this.arrel == null) return null;
         AcbEnll<E> copia = new AcbEnll<E>();
         copia.arrel = this.arrel.clone();
 

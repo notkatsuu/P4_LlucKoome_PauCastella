@@ -12,10 +12,9 @@ public class Main {
 
     // Enum for different menu options
     public enum Menus {
-        OPCIONS("1.- Inserir Jugador", "2.- Eliminar Jugador", "3.- Visualitzar un dels dos arbres", "4.- Clonar",
-                "5.- Acabar"),
-        ENTRAR_POSICIO("1.- Base", "2.- Escorta", "3.- Aler", "4.- AlerPivot", "5.- Pivot"),
-        ENTRAR_PUNTUACIO("Indica la seva puntuació [0, 1000]");
+        OPCIONS("Inserir Jugador", "Eliminar Jugador", "Visualitzar un dels dos arbres", "Clonar",
+                "Acabar"),
+        ENTRAR_JUGADOR("Base", "Escorta", "Aler", "AlerPivot", "Pivot");
 
         private final String[] options;
 
@@ -44,32 +43,31 @@ public class Main {
 
         boolean run = true;
         while (run) {
-            console.clear();
+            
             // Display the options and perform the selected action
-            switch (sistemaPrints(Menus.OPCIONS)) {
+            switch (printSystem(Menus.OPCIONS.getOptions())) {
 
                 case 1:
-    try {
-        Jugador j = seleccioJugador();
-        arbre.inserir((E) j);
-    } catch (ArbreException e) {
-        printArbreException(e);
-    }
-    break;
+                    try {
+                        Jugador j = seleccioJugador();
+                        arbre.inserir((E) j);
+                    } catch (ArbreException e) {
+                        printArbreException(e);
+                    }
+                    break;
 
-case 2:
-    try {
-        Jugador j = seleccioJugador();
-        arbre.esborrar((E) j);
-    } catch (ArbreException e) {
-        printArbreException(e);
-    }
-    break;
-
+                case 2:
+                    try {
+                        Jugador j = seleccioJugador();
+                        arbre.esborrar((E) j);
+                    } catch (ArbreException e) {
+                        printArbreException(e);
+                    }
+                    break;
 
                 case 3:
                     // Display one of the trees
-                    if (seleccioBinaria("Actual", "Clonat"))
+                    if (printSystem("Actual", "Clonat")==1)
                         aVisualitzar = arbre;
                     else if (duplicate != null) {
                         aVisualitzar = duplicate;
@@ -79,21 +77,22 @@ case 2:
                     }
 
                     try {
-                        ((AcbEnll<E>) aVisualitzar).iniRecorregut(seleccioBinaria("Ascendent", "Descendent"));
-
+                        ((AcbEnll<E>) aVisualitzar).iniRecorregut(printSystem("Ascendent", "Descendent")==1);
+                        int nombreCua = 0;
                         do {
+                            nombreCua++;
                             // Display the next element in the tree
                             c = ((AcbEnll<E>) aVisualitzar).segRecorregut();
-                            console.println(c.toString());
+                            console.println(nombreCua + ".-: " + c.toString());
 
                         } while (!((AcbEnll<E>) aVisualitzar).finalRecorregut());
-
+                        console.readKey();
                     } catch (ArbreException e) {
                         // Handle exception
                         printArbreException(e);
                     }
 
-                    console.readKey();
+                    
                     break;
 
                 case 4:
@@ -120,64 +119,52 @@ case 2:
     }
 
     // Display the options for the given menu and return the selected option
-    public static int sistemaPrints(Menus actual) {
-        int val = -1;
-        switch (actual) {
-
-            case OPCIONS:
-            case ENTRAR_POSICIO:
-                do {
-                    // Display the options
-                    for (String option : actual.getOptions()) {
-                        console.println(option);
-                    }
-
-                    console.println("Tria una opció: [1," + actual.getOptions().length + "]");
-                    val = console.readInt();
-
-                } while (val < 1 || val > actual.getOptions().length);
-                return val;
-
-            case ENTRAR_PUNTUACIO:
-                do {
-                    // Prompt
-
-                    console.println(actual.getOptions()[0]);
-                    val = console.readInt();
-
-                } while (val < 0 || val > 1000);
-                return val;
-
-            default:
-                return -1;
-        }
-    }
-
-    public static boolean seleccioBinaria(String a, String b) {
-        int result;
-        do {
-            console.println("Indica en quin ordre vols mostrar els jugadors");
-            console.println("1.- " + a);
-            console.println("2.- " + b);
-            console.println("Tria una opció [1,2]");
-
-            result = console.readInt();
-        } while (result != 2 && result != 1);
-
-        return (result == 1);
-    }
 
     public static void printArbreException(ArbreException e) {
         console.setForegroundColor(Color.red);
         console.println("\n" + e.toString() + "\n");
         console.resetColor();
         console.readKey();
-        console.clear();
+        
+    }
+
+    public static int printSystem(String... options) {
+        int val = -1;
+        do {
+            // Display the options
+            
+
+            if (options.length == 2) { // Handle seleccioBinaria case
+                console.print("Tria una opció -> "+ options[0] + "[1], " + options[1] + "[2]: ");
+                val = console.readInt();
+                if (val == 1 || val == 2) {
+                    return val;
+                }
+            } else if (options.length == 1 && options[0].startsWith("Tria la puntuació")) { // Handle setPunts case
+                console.print(options[0] + ": ");
+                val = console.readInt();
+                if (val >= 0 && val <= 1000) {
+                    return val;
+                }
+            } else { // Default case
+                console.clear();
+                for (int i = 0; i < options.length; i++) {
+                    console.println((i + 1) + ".- " + options[i]);
+                }
+                console.print("Tria una opció: [1," + options.length + "]: ");
+                val = console.readInt();
+                if (val >= 1 && val <= options.length) {
+                    return val;
+                }
+            }
+
+        } while (true);
     }
 
     private static Jugador seleccioJugador() {
-        return new Jugador(sistemaPrints(Menus.ENTRAR_POSICIO), sistemaPrints(Menus.ENTRAR_PUNTUACIO));
+        return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions()), printSystem("Tria la puntuació [0,1000]"));
     }
+
     
 
 }
