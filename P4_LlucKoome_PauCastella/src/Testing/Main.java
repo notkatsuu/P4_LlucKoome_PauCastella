@@ -33,8 +33,10 @@ public class Main {
     public static <E extends Comparable<E>> void main(String[] args) throws Exception {
         // Initialize the trees
         Acb<E> arbre = new AcbEnll<E>();
-        Acb<E> duplicate = new AcbEnll<E>();
+
         Acb<E> aVisualitzar = null;
+
+        Object duplicate = null;
 
         Comparable<E> c;
 
@@ -43,7 +45,7 @@ public class Main {
 
         boolean run = true;
         while (run) {
-            
+
             // Display the options and perform the selected action
             switch (printSystem(Menus.OPCIONS.getOptions())) {
 
@@ -67,17 +69,22 @@ public class Main {
 
                 case 3:
                     // Display one of the trees
-                    if (printSystem("Actual", "Clonat")==1)
+                    if (printSystem("Actual", "Clonat") == 1)
                         aVisualitzar = arbre;
                     else if (duplicate != null) {
-                        aVisualitzar = duplicate;
+
+                        aVisualitzar = (Acb<E>) duplicate;
                     } else {
+
+                        console.setForegroundColor(Color.red);
                         console.println("Arbre Buit");
+                        console.resetColor();
+                        console.readKey();
                         break;
                     }
 
                     try {
-                        ((AcbEnll<E>) aVisualitzar).iniRecorregut(printSystem("Ascendent", "Descendent")==1);
+                        ((AcbEnll<E>) aVisualitzar).iniRecorregut(printSystem("Ascendent", "Descendent") == 1);
                         int nombreCua = 0;
                         do {
                             nombreCua++;
@@ -92,12 +99,11 @@ public class Main {
                         printArbreException(e);
                     }
 
-                    
                     break;
 
                 case 4:
                     // Clone the tree
-                    duplicate = (Acb<E>) ((AcbEnll) arbre).clone();
+                    duplicate = ((AcbEnll<E>) arbre).clone();
                     break;
 
                 case 5:
@@ -125,17 +131,16 @@ public class Main {
         console.println("\n" + e.toString() + "\n");
         console.resetColor();
         console.readKey();
-        
+
     }
 
     public static int printSystem(String... options) {
         int val = -1;
         do {
             // Display the options
-            
 
             if (options.length == 2) { // Handle seleccioBinaria case
-                console.print("Tria una opció -> "+ options[0] + "[1], " + options[1] + "[2]: ");
+                console.print("Tria una opció -> " + options[0] + "[1], " + options[1] + "[2]: ");
                 val = console.readInt();
                 if (val == 1 || val == 2) {
                     return val;
@@ -164,7 +169,5 @@ public class Main {
     private static Jugador seleccioJugador() {
         return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions()), printSystem("Tria la puntuació [0,1000]"));
     }
-
-    
 
 }
