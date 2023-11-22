@@ -45,7 +45,7 @@ public class Main {
 
         boolean run = true;
         while (run) {
-
+            console.clear();
             // Display the options and perform the selected action
             switch (printSystem(Menus.OPCIONS.getOptions())) {
 
@@ -55,16 +55,38 @@ public class Main {
                         arbre.inserir((E) j);
                     } catch (ArbreException e) {
                         printArbreException(e);
+                        break;
                     }
+
+                    confirmar("afegit el jugador");
+                    
                     break;
 
                 case 2:
-                    try {
+                    try {   
+                        
+                        console.println("Selecciona un dels teus jugadors actuals: \n");
+                        ((AcbEnll<E>) arbre).iniRecorregut(true);
+                
+                        do {
+                            
+                            // Display the next element in the tree
+                            c = ((AcbEnll<E>) arbre).segRecorregut();
+                            console.println(" - " + c.toString());
+
+                        } while (!((AcbEnll<E>) arbre).finalRecorregut());
+
+                        console.println();
+
+                        
                         Jugador j = seleccioJugador();
                         arbre.esborrar((E) j);
                     } catch (ArbreException e) {
                         printArbreException(e);
+                        break;
                     }
+
+                    confirmar("eliminat el jugador");
                     break;
 
                 case 3:
@@ -104,6 +126,8 @@ public class Main {
                 case 4:
                     // Clone the tree
                     duplicate = ((AcbEnll<E>) arbre).clone();
+
+                    confirmar("clonat");
                     break;
 
                 case 5:
@@ -128,7 +152,7 @@ public class Main {
 
     public static void printArbreException(ArbreException e) {
         console.setForegroundColor(Color.red);
-        console.println("\n" + e.toString() + "\n");
+        console.println("\n" + e.getLocalizedMessage() + "\n" + "Prem qualsevol botó per a retornar a l'inici.");
         console.resetColor();
         console.readKey();
 
@@ -152,10 +176,13 @@ public class Main {
                     return val;
                 }
             } else { // Default case
-                console.clear();
+                console.setForegroundColor(Color.gray);
+                console.println();
                 for (int i = 0; i < options.length; i++) {
                     console.println((i + 1) + ".- " + options[i]);
                 }
+                console.resetColor();
+                console.println();
                 console.print("Tria una opció: [1," + options.length + "]: ");
                 val = console.readInt();
                 if (val >= 1 && val <= options.length) {
@@ -168,6 +195,16 @@ public class Main {
 
     private static Jugador seleccioJugador() {
         return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions()), printSystem("Tria la puntuació [0,1000]"));
+    }
+
+
+    private static void confirmar(String missatge){
+        console.println();
+        console.setForegroundColor(Color.GREEN);
+        console.println("S'ha " + missatge + " correctament !");
+        console.resetColor();
+        console.readKey();
+
     }
 
 }

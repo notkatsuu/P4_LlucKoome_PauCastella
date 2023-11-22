@@ -216,13 +216,13 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
     public void inserir(E e) throws ArbreException {
 
         if (e == null)
-            throw new ArbreException("Element Buit");
+            throw new ArbreException("Element Buit"); //Per a debugging
 
         if (arrel == null)
             arrel = new NodeA(e);
 
         else if (membre(e)) {
-            throw new ArbreException("Ja hi es");
+            throw new ArbreException("Ja hi és aquest jugador!"); 
         }
 
         else
@@ -234,12 +234,12 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
     public void esborrar(E e) throws ArbreException {
 
         if (e == null)
-            throw new ArbreException("Element Buit");
+            throw new ArbreException("Element Buit"); //Per a debugging
         if (arrel == null)
-            throw new ArbreException("Arbre Buit");
+            throw new ArbreException("Arbre Buit"); //Per a debugging
 
         if (!membre(e))
-            throw new ArbreException("L'element no es troba a l'arbre");
+            throw new ArbreException("El jugador no es troba a la llista");
 
         this.arrel = arrel.esborrarR(this.arrel, e);
     }
@@ -251,7 +251,6 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     }
 
-    // ELS METODES PRIVATS ELS HAURE DE POSAR A DINS LA CLASSE NODE AL FINAL
 
     public void iniRecorregut(boolean sentit) {
        
@@ -289,9 +288,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      */
     public E segRecorregut() throws ArbreException {
         if (cua == null)
-            throw new ArbreException("Cua Inexistent");
+            throw new ArbreException("Cua Inexistent"); //Per a debugging
         if (cua.isEmpty())
-            throw new ArbreException("Cua Buida");
+            throw new ArbreException("No hi ha jugadors");
 
         // Mirar si es modifica l'arbre, copiant la cua a un aux i fent una nova cua per
         // tal de veure si coincideixen
