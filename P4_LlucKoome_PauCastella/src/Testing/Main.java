@@ -53,23 +53,24 @@ public class Main {
                     try {
                         Jugador j = seleccioJugador();
                         arbre.inserir((E) j);
+
                     } catch (ArbreException e) {
                         printArbreException(e);
                         break;
                     }
 
                     confirmar("afegit el jugador");
-                    
+
                     break;
 
                 case 2:
-                    try {   
-                        
+                    try {
+
                         console.println("Selecciona un dels teus jugadors actuals: \n");
                         ((AcbEnll<E>) arbre).iniRecorregut(true);
-                
+
                         do {
-                            
+
                             // Display the next element in the tree
                             c = ((AcbEnll<E>) arbre).segRecorregut();
                             console.println(" - " + c.toString());
@@ -78,7 +79,6 @@ public class Main {
 
                         console.println();
 
-                        
                         Jugador j = seleccioJugador();
                         arbre.esborrar((E) j);
                     } catch (ArbreException e) {
@@ -90,6 +90,7 @@ public class Main {
                     break;
 
                 case 3:
+                    
                     // Display one of the trees
                     if (printSystem("Actual", "Clonat") == 1)
                         aVisualitzar = arbre;
@@ -115,6 +116,7 @@ public class Main {
                             console.println(nombreCua + ".-: " + c.toString());
 
                         } while (!((AcbEnll<E>) aVisualitzar).finalRecorregut());
+                        console.println("\n Alçada actual de l'arbre: " + ((AcbEnll<E>) arbre).cardinalitat() + "\n ");
                         console.readKey();
                     } catch (ArbreException e) {
                         // Handle exception
@@ -197,8 +199,7 @@ public class Main {
         return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions()), printSystem("Tria la puntuació [0,1000]"));
     }
 
-
-    private static void confirmar(String missatge){
+    private static void confirmar(String missatge) {
         console.println();
         console.setForegroundColor(Color.GREEN);
         console.println("S'ha " + missatge + " correctament !");

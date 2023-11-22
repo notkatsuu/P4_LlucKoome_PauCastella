@@ -27,37 +27,23 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
         // METODES ADDICIONALS RECURSIUS
 
-        @Override
-        public NodeA clone() {
-            NodeA cloned = new NodeA();
-            cloned.cont = this.cont;
-            if (this.left != null) {
-                cloned.left = this.left.clone();
-            }
-            if (this.right != null) {
-                cloned.right = this.right.clone();
-            }
-            return cloned;
-        }
-
         private Queue<E> recorrerDireccio(boolean sentit) {
-            Queue<E> auxQueue = new LinkedList<>();
-            NodeA firstNode = sentit ? this.left : this.right;
-            NodeA secondNode = sentit ? this.right : this.left;
-        
-            if (firstNode != null) {
-                auxQueue.addAll(firstNode.recorrerDireccio(sentit));
+            Queue<E> aux = new LinkedList<>();
+            NodeA primer = sentit ? this.left : this.right;
+            NodeA segon = sentit ? this.right : this.left;
+
+            if (primer != null) {
+                aux.addAll(primer.recorrerDireccio(sentit));
             }
-            
-            auxQueue.add(this.cont);
-        
-            if (secondNode != null) {
-                auxQueue.addAll(secondNode.recorrerDireccio(sentit));
+
+            aux.add(this.cont);
+
+            if (segon != null) {
+                aux.addAll(segon.recorrerDireccio(sentit));
             }
-        
-            return auxQueue;
+
+            return aux;
         }
-        
 
         private NodeA inserirR(NodeA a, E e) throws ArbreException {
 
@@ -123,11 +109,8 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
             int dif = e.compareTo(a.cont);
 
-         
-
             if (dif == 0) {
 
-            
                 return true;
             }
 
@@ -135,6 +118,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
                 return membreR(a.right, e);
 
             return membreR(a.left, e);
+
         }
 
         private E buscarMax(NodeA a) { // Katsu toca això que has tingut una idea millor
@@ -153,6 +137,45 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
             return a;
 
+        }
+
+        @Override
+        public NodeA clone() {
+            NodeA cloned = new NodeA();
+            cloned.cont = this.cont;
+            if (this.left != null) {
+                cloned.left = this.left.clone();
+            }
+            if (this.right != null) {
+                cloned.right = this.right.clone();
+            }
+            return cloned;
+        }
+
+        public int cardinalitat(int max, int actual){
+
+         
+
+            actual++;
+
+            max = Math.max(max, actual);
+
+            
+
+            if (left != null) max = left.cardinalitat(max, actual);
+
+            
+            if (right != null) max = right.cardinalitat(max, actual);
+        
+         
+            
+
+            return max;
+
+
+           
+            
+            
         }
 
     }
@@ -216,13 +239,13 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
     public void inserir(E e) throws ArbreException {
 
         if (e == null)
-            throw new ArbreException("Element Buit"); //Per a debugging
+            throw new ArbreException("Element Buit"); // Per a debugging
 
         if (arrel == null)
             arrel = new NodeA(e);
 
         else if (membre(e)) {
-            throw new ArbreException("Ja hi és aquest jugador!"); 
+            throw new ArbreException("Ja hi és aquest jugador!");
         }
 
         else
@@ -234,9 +257,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
     public void esborrar(E e) throws ArbreException {
 
         if (e == null)
-            throw new ArbreException("Element Buit"); //Per a debugging
+            throw new ArbreException("Element Buit"); // Per a debugging
         if (arrel == null)
-            throw new ArbreException("Arbre Buit"); //Per a debugging
+            throw new ArbreException("Arbre Buit"); // Per a debugging
 
         if (!membre(e))
             throw new ArbreException("El jugador no es troba a la llista");
@@ -251,13 +274,12 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     }
 
-
     public void iniRecorregut(boolean sentit) {
-       
+
         if (arrel == null)
             return;
         cua = this.arrel.recorrerDireccio(sentit); // Assign the returned queue to cua
-       
+
     }
 
     /*
@@ -288,12 +310,19 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
      */
     public E segRecorregut() throws ArbreException {
         if (cua == null)
-            throw new ArbreException("Cua Inexistent"); //Per a debugging
+            throw new ArbreException("Cua Inexistent"); // Per a debugging
         if (cua.isEmpty())
             throw new ArbreException("No hi ha jugadors");
+        Queue<E> cuaUpdated = null;
 
-        // Mirar si es modifica l'arbre, copiant la cua a un aux i fent una nova cua per
-        // tal de veure si coincideixen
+        if (cua.toArray().length > 1)
+            cuaUpdated = arrel.recorrerDireccio(((Comparable<E>) cua.toArray()[0]).compareTo((E) cua.toArray()[1]) < 0);
+
+        else
+            cuaUpdated = arrel.recorrerDireccio(true);
+
+        if (cuaUpdated == cua)
+            throw new ArbreException("Cua modificada en interació");
 
         return cua.poll();
 
@@ -313,11 +342,17 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
 
     @Override
     public Object clone() {
-        if (this.arrel == null) return null;
+        if (this.arrel == null)
+            return null;
         AcbEnll<E> copia = new AcbEnll<E>();
         copia.arrel = this.arrel.clone();
 
         return copia;
+    }
+
+    public int cardinalitat() {
+
+        return arrel.cardinalitat(-1,0);
     }
 
 }
