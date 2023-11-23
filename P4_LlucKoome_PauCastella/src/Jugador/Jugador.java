@@ -10,7 +10,7 @@ public class Jugador implements Comparable<Jugador> {
 
     public Jugador(int pos, int punts){
 
-        this.pos = Posicio.values()[pos-1]; // Converteixo l'enter a una Posició i l'assigno a l'Atribut pos
+        this.pos = Posicio.values()[pos]; // Converteixo l'enter a una Posició i l'assigno a l'Atribut pos
 
         puntuacio = punts; // assigno els punts
 

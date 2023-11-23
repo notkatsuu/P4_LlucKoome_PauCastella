@@ -43,6 +43,18 @@ public class Main {
         // Initialize the console
         initConsole();
 
+        //Testing
+        JUnit5TestPractica4 tester = new JUnit5TestPractica4();
+
+        tester.testArbre0Null();
+        tester.testArbre1();
+        tester.testArbre2QueueAscendent();
+        tester.testArbre3QueueDescendent();
+        tester.testArbre4inserirDuplicat();
+        tester.testArbre5eliminarInexistent();
+        tester.testArbre6clonat();
+
+
         boolean run = true;
         while (run) {
             console.clear();
@@ -95,7 +107,6 @@ public class Main {
                     if (printSystem("Actual", "Clonat") == 1)
                         aVisualitzar = arbre;
                     else if (duplicate != null) {
-
                         aVisualitzar = (Acb<E>) duplicate;
                     } else {
 
@@ -196,7 +207,8 @@ public class Main {
     }
 
     private static Jugador seleccioJugador() {
-        return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions()), printSystem("Tria la puntuació [0,1000]"));
+        //restem un a la posició ja que l'usuari entra un valor de 1 a 5 i l'array és de 0 a 4
+        return new Jugador(printSystem(Menus.ENTRAR_JUGADOR.getOptions())-1, printSystem("Tria la puntuació [0,1000]"));
     }
 
     private static void confirmar(String missatge) {

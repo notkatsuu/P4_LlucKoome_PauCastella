@@ -152,36 +152,16 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
             return cloned;
         }
 
-        public int cardinalitat(int max, int actual){
-
-         
-
-            actual++;
-
-            max = Math.max(max, actual);
-
+        public int cardinalitat(){
             
+            return 1+((this.left==null)?0:this.left.cardinalitat())+((this.right==null)?0:this.right.cardinalitat());
 
-            if (left != null) max = left.cardinalitat(max, actual);
-
-            
-            if (right != null) max = right.cardinalitat(max, actual);
-        
-         
-            
-
-            return max;
-
-
-           
-            
-            
         }
 
     }
 
     protected NodeA arrel = null;
-    public Queue<E> cua = new LinkedList<>();
+    public Queue<E> cua = new LinkedList<E>();
 
     public AcbEnll() { // sense parametre, constructor arbre null
         this.arrel = null;
@@ -350,9 +330,9 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E>, Cloneable {
         return copia;
     }
 
-    public int cardinalitat() {
-
-        return arrel.cardinalitat(-1,0);
+    public int cardinalitat(){
+               
+        return arrel==null?0: arrel.cardinalitat();
     }
 
 }
