@@ -58,12 +58,14 @@ public class Main {
         boolean run = true;
         while (run) {
             console.clear();
+            Jugador j = null;
             // Display the options and perform the selected action
             switch (printSystem(Menus.OPCIONS.getOptions())) {
 
                 case 1:
+                    
                     try {
-                        Jugador j = seleccioJugador();
+                        j = seleccioJugador();
                         arbre.inserir((E) j);
 
                     } catch (ArbreException e) {
@@ -71,7 +73,7 @@ public class Main {
                         break;
                     }
 
-                    confirmar("afegit el jugador");
+                    confirmar("El jugador "+j.toString()+" s'ha afegit");
 
                     break;
 
@@ -91,14 +93,14 @@ public class Main {
 
                         console.println();
 
-                        Jugador j = seleccioJugador();
+                        j = seleccioJugador();
                         arbre.esborrar((E) j);
                     } catch (ArbreException e) {
                         printArbreException(e);
                         break;
                     }
 
-                    confirmar("eliminat el jugador");
+                    confirmar("El jugador "+j.toString()+" s'ha eliminat");
                     break;
 
                 case 3:
