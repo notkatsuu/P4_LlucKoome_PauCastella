@@ -127,7 +127,9 @@ public class Main {
                             console.println(nombreCua + ".-: " + c.toString());
 
                         } while (!((AcbEnll<E>) aVisualitzar).finalRecorregut());
+
                         console.println("\n Alçada actual de l'arbre: " + ((AcbEnll<E>) arbre).cardinalitat() + "\n ");
+                        
                         console.readKey();
                     } catch (ArbreException e) {
                         // Handle exception
